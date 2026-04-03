@@ -13,8 +13,8 @@ on:
   workflow_dispatch:
 
 env:
-  DOCKER_REPO: shenxn/protonmail-bridge
-  DOCKER_REPO_DEV: ghcr.io/shenxn/protonmail-bridge-dev
+  DOCKER_REPO: ghcr.io/metalsp0rk/protonmail-bridge
+  DOCKER_REPO_DEV: ghcr.io/metalsp0rk/protonmail-bridge-dev
 
 jobs:
   deb:
@@ -54,19 +54,13 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        if: ${{ github.event_name != 'pull_request' }}
-        with:
-          username: ${{ secrets.REGISTRY_USERNAME }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v1
         if: ${{ github.event_name != 'pull_request' }}
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.CR_PAT }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: Push image
         uses: docker/build-push-action@v2
         with:
